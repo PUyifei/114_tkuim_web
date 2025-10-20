@@ -17,18 +17,18 @@ var student = {
     },
     getGrade: function () {
         var lev = "";
-        if (this.scores > 80) {
+        if (student.getAverage() > 80) {
             lev = 'A';
-        } else if (this.scores > 60) {
+        } else if (student.getAverage() > 60) {
             lev = 'B';
-        } else if (n > 40) {
-            msg += '\n' + n + ' 是c';
-        } else if (n > 20) {
-            msg += '\n' + n + ' 是D';
+        } else if (student.getAverage() > 40) {
+            lev = 'C';
+        } else if (student.getAverage() > 20) {
+            lev = 'D';
         } else {
-            msg += '\n' + n + ' 是F';
+            lev = 'F';
         }
-        return ;
+        return '\n等第：'+lev;
     }
 };
 
