@@ -38,11 +38,11 @@ if (n >100 || n < 0) {
 } else if (n > 60) {
   msg += '\n'+ n + ' 是B';
 } else if (n > 40) {
-  msg += '\n'+ n + ' 是是c';
+  msg += '\n'+ n + ' 是c';
 } else if (n >20) {
-  msg += '\n'+ n + ' 是是D';
+  msg += '\n'+ n + ' 是D';
 } else {
-  msg += '\n'+ n + ' 是是F';
+  msg += '\n'+ n + ' 是F';
 }
 
 document.getElementById('result').textContent = msg;
