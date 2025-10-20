@@ -8,7 +8,7 @@ alert('歡迎來到 JavaScript！');
 console.log('Hello JavaScript from console');
 
 //點擊跳出
-var button = alert('你好');
+var st = alert('你好');
 
 // 在頁面指定區域輸出文字
 var el = document.getElementById('result');
