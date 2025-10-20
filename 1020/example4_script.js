@@ -29,4 +29,20 @@ switch (choice) {
     msg += '\n非 1/2/3';
 }
 
+var input = prompt('請輸入分數：');
+
+if (n >100 || n < 0) {
+  msg += '\n輸入不是有效的分數！';
+} else if (n > 80) {
+  msg += '\n'+ n + ' 是A';
+} else if (n > 60) {
+  msg += '\n'+ n + ' 是B';
+} else if (n > 40) {
+  msg += '\n'+ n + ' 是是c';
+} else if (n >20) {
+  msg += '\n'+ n + ' 是是D';
+} else {
+  msg += '\n'+ n + ' 是是F';
+}
+
 document.getElementById('result').textContent = msg;
