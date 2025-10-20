@@ -20,4 +20,11 @@ var textToNumber = parseInt(text, 10); // 將 '123' → 123
 lines += 'parseInt(\'123\') = ' + textToNumber + '\n';
 lines += 'String(45) = ' + String(num) + '\n';
 
+// 輸入輸出
+var a = prompt('請輸入第一個數字：');
+var numA = parseInt(a, 10);
+var b = prompt('再輸入第二個數字：');
+var numB = parseInt(b, 10);
+lines += a + ' + ' + b + ' = ' + (numA+numB) +'\n';
+
 document.getElementById('result').textContent = lines;
