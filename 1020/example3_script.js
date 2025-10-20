@@ -22,8 +22,8 @@ output += 'A / B = ' + (numA / numB) + '\n';
 output += 'A > B ? ' + (numA > numB) + '\n';
 output += 'A == B ? ' + (numA == numB) + '（僅比較值）\n';
 output += 'A === B ? ' + (numA === numB) + '（比較值與型態）\n';
-output += 'A % B ? ' + (numA % numB) + '\n';
 //計算餘數，即未以整數除盡之剩餘
+output += 'A % B = ' + (numA % numB) + '\n';
 
 alert('計算完成，請看頁面結果與 Console');
 console.log(output);
