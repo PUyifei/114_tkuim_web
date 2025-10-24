@@ -26,6 +26,15 @@ function bmiLevel(bmi) {
   return level;
 }
 
+function isIdeal(bmi) {
+  var fit = Boolean;
+  if ( bmi > 18.5 && bmi <=24 ){
+     fit = true;
+  } else {
+     fit = false;
+  }
+}
+
 var hStr = prompt('請輸入身高（公分）：');
 var wStr = prompt('請輸入體重（公斤）：');
 var hNum = parseFloat(hStr);
@@ -40,6 +49,7 @@ if (isNaN(hNum) || isNaN(wNum) || hNum <= 0) {
        + '體重：' + wNum + ' kg\n'
        + 'BMI：' + bmi.toFixed(2) + '\n'
        + '等級：' + bmiLevel(bmi);
+       + '是否介於18.5-24之間：'+ isIdeal(bmi);
 }
 
 
