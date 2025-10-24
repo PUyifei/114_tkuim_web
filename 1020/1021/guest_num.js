@@ -1,17 +1,29 @@
-// temperature_convert.js
-// 使用 prompt() 讀入溫度與單位（C 或 F）。
-// 轉換公式：C = (F - 32) * 5 / 9；F = C * 9 / 5 + 32。
-// 結果以 alert() 與頁面 <pre> 顯示。
+//電腦隨機產生 1–100（Math.floor(Math.random()*100)+1）。
+//使用 prompt() 讓使用者輸入數字，提示「再大一點 / 再小一點」。
+//猜中顯示次數統計。
 
-var cStr = prompt('請輸入攝氏溫度：');
-var fStr = prompt('請輸入華氏溫度：');
-var cNum = parseFloat(cStr);
-var fNum = parseFloat(fStr);
+var ans = Math.floor(Math.random() * 100) + 1;
+var aStr;
+var count = 0;
+var line ='';
 
-var output = '';
-output += '攝氏為 ' + ((fNum - 32) * 5 / 9).toFixed(2);
-output += '\n華氏為 ' + (cNum * 9 / 5 + 32).toFixed(2);
+while (true) {
+    var aStr = prompt('請輸入任意數字：');
+    var aNum = parseFloat(aStr);
+    count++;
+    if (isNaN(aNum)) {
+        alert('請輸入有效的數字！');
+        continue;
+    }
 
-alert(output);
-console.log(output);
-document.getElementById('result').textContent = output;
+    if (aNum > ans) {
+        alert('再小一點');
+    } else if (aNum < ans) {
+        alert('再大一點');
+    } else {
+        
+        break;
+    }
+}
+line = '恭喜你猜對了！\n答案是：' + ans + '\n你總共猜了 ' + count + ' 次。';
+document.getElementById('result').textContent = line;
