@@ -5,6 +5,7 @@ const form = document.getElementById('contact-form');
 const email = document.getElementById('email');
 const phone = document.getElementById('phone');
 
+
 function showValidity(input) {
   if (input.validity.valueMissing) {
     input.setCustomValidity('這個欄位必填');
@@ -18,22 +19,39 @@ function showValidity(input) {
   return input.reportValidity();
 }
 
-function reportValidity() {
+function validateEmailDomain(emailInput) {
+  const emailValue = emailInput.value.trim();
+  const allowedDomain = '@o365.tku.edu.tw';
 
+  // 檢查是否以指定網域結尾
+  if (!emailValue.endsWith(allowedDomain)) {
+    emailInput.setCustomValidity(`Email 必須使用 ${allowedDomain} 網域`);
+  } else {
+    emailInput.setCustomValidity('');
+  }
+
+  return emailInput.reportValidity();
 }
-
 form.addEventListener('submit', (event) => {
   event.preventDefault();
+
+  // 一般格式驗證
   const emailOk = showValidity(email);
   const phoneOk = showValidity(phone);
-  if (emailOk && phoneOk) {
+
+  // 額外網域驗證
+  const domainOk = validateEmailDomain(email);
+
+  if (emailOk && phoneOk && domainOk) {
     alert('表單驗證成功，準備送出資料');
     form.reset();
   }
 });
 
+// 失焦時即時提示
 email.addEventListener('blur', () => {
   showValidity(email);
+  validateEmailDomain(email);
 });
 
 phone.addEventListener('blur', () => {
