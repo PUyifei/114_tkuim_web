@@ -13,14 +13,15 @@ function validatePassword() {
   const value = password.value.trim();
   const hasLetter = /[A-Za-z]/.test(value);
   const hasNumber = /\d/.test(value);
+  const hasSymbol = /[!@#$%^&*(),.?":{}|<>]/.test(value);
   let message = '';
 
   if (!value) {
     message = '請輸入密碼。';
   } else if (value.length < 8) {
     message = '密碼至少需 8 碼。';
-  } else if (!hasLetter || !hasNumber) {
-    message = '請同時包含英文字母與數字。';
+  } else if (!hasLetter || !hasNumber || !hasSymbol) {
+    message = '請同時包含英文字母、數字與特殊符號。';
   }
 
   password.setCustomValidity(message);
