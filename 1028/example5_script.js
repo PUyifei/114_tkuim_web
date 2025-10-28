@@ -4,7 +4,7 @@
 const form = document.getElementById('full-form');
 const submitBtn = document.getElementById('submitBtn');
 const resetBtn = document.getElementById('resetBtn');
-const agree = document.getElementById('agree');
+const agreeCheckbox = document.getElementById('agree');
 
 function validateAllInputs(formElement) {
   let firstInvalid = null;
@@ -21,8 +21,14 @@ function validateAllInputs(formElement) {
   return firstInvalid;
 }
 
-agree.addEventListener('checkbox', (event) => {
-  alert('隱私條款');
+agreeCheckbox.addEventListener('change', () => {
+  if (agreeCheckbox.checked) {
+    alert(`隱私權條款：
+  1. 我們僅蒐集提供服務所需的最少個人資料。
+  2. 您的資料將依據個資法安全保存與使用。
+  3. 您可隨時要求查閱、更正或刪除個人資料。
+  感謝您閱讀並同意本條款。`);
+  }
 });
 
 form.addEventListener('submit', async (event) => {
