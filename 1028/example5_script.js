@@ -4,6 +4,7 @@
 const form = document.getElementById('full-form');
 const submitBtn = document.getElementById('submitBtn');
 const resetBtn = document.getElementById('resetBtn');
+const agree = document.getElementById('agree');
 
 function validateAllInputs(formElement) {
   let firstInvalid = null;
@@ -19,6 +20,10 @@ function validateAllInputs(formElement) {
   });
   return firstInvalid;
 }
+
+agree.addEventListener('checkbox', (event) => {
+  alert('隱私條款');
+});
 
 form.addEventListener('submit', async (event) => {
   event.preventDefault();
