@@ -1,66 +1,165 @@
-// example5_script.js
-// 攔截 submit，聚焦第一個錯誤並模擬送出流程
+// signup_form.js
+// === 會員註冊表單綜合驗證 ===
 
-const form = document.getElementById('full-form');
+// 取得主要 DOM 元素
+const form = document.getElementById('member-form');
 const submitBtn = document.getElementById('submitBtn');
 const resetBtn = document.getElementById('resetBtn');
 const agreeCheckbox = document.getElementById('agree');
 
-function validateAllInputs(formElement) {
+const email = document.getElementById('email');
+const phone = document.getElementById('phone');
+const password = document.getElementById('password');
+const confirmPassword = document.getElementById('confirm');
+const passwordError = document.getElementById('password-error');
+const confirmError = document.getElementById('confirm-error');
+
+// --- 共用：欄位即時清除錯誤樣式 ---
+form.addEventListener('input', (e) => {
+  const target = e.target;
+  if (target.classList.contains('is-invalid') && target.checkValidity()) {
+    target.classList.remove('is-invalid');
+  }
+});
+
+// --- Email 與手機驗證 ---
+function showValidity(input) {
+  if (input.validity.valueMissing) {
+    input.setCustomValidity('這個欄位必填');
+  } else if (input.validity.typeMismatch) {
+    input.setCustomValidity('格式不正確，請確認輸入內容');
+  } else if (input.validity.patternMismatch) {
+    input.setCustomValidity(input.title || '格式不正確');
+  } else {
+    input.setCustomValidity('');
+  }
+  return input.reportValidity();
+}
+
+// 失焦時即時驗證 Email / Phone
+email.addEventListener('blur', () => {
+  showValidity(email);
+});
+phone.addEventListener('blur', () => {
+  showValidity(phone);
+});
+
+// --- 密碼與確認密碼驗證 ---
+const touched = new Set();
+
+function validatePassword() {
+  const value = password.value.trim();
+  const hasLetter = /[A-Za-z]/.test(value);
+  const hasNumber = /\d/.test(value);
+  const hasSymbol = /[!@#$%^&*(),.?":{}|<>]/.test(value);
+  let message = '';
+
+  if (!value) {
+    message = '請輸入密碼。';
+  } else if (value.length < 8) {
+    message = '密碼至少需 8 碼。';
+  } else if (!hasLetter || !hasNumber || !hasSymbol) {
+    message = '請同時包含英文字母、數字與特殊符號。';
+  }
+
+  password.setCustomValidity(message);
+  passwordError.textContent = message;
+  return !message;
+}
+
+function validateConfirm() {
+  const passwordValue = password.value.trim();
+  const confirmValue = confirmPassword.value.trim();
+  let message = '';
+
+  if (!confirmValue) {
+    message = '請再次輸入密碼。';
+  } else if (passwordValue !== confirmValue) {
+    message = '兩次輸入的密碼不一致。';
+  }
+
+  confirmPassword.setCustomValidity(message);
+  confirmError.textContent = message;
+  return !message;
+}
+
+function runValidation(fieldId) {
+  if (fieldId === 'password') {
+    validatePassword();
+    if (touched.has('confirm')) validateConfirm();
+  } else if (fieldId === 'confirm') {
+    validateConfirm();
+  }
+}
+
+[password, confirmPassword].forEach((input) => {
+  input.addEventListener('blur', (e) => {
+    touched.add(e.target.id);
+    runValidation(e.target.id);
+  });
+  input.addEventListener('input', (e) => {
+    if (touched.has(e.target.id)) runValidation(e.target.id);
+  });
+});
+
+// --- 同意條款提示 ---
+agreeCheckbox.addEventListener('change', () => {
+  if (agreeCheckbox.checked) {
+    alert(`隱私權條款：
+1. 我們僅蒐集提供服務所需的最少個人資料。
+2. 您的資料將依據個資法安全保存與使用。
+3. 您可隨時要求查閱、更正或刪除個人資料。
+感謝您閱讀並同意本條款。`);
+  }
+});
+
+// --- 表單送出 ---
+form.addEventListener('submit', async (event) => {
+  event.preventDefault();
+
+  submitBtn.disabled = true;
+  submitBtn.textContent = '送出中...';
+
+  // 驗證一般欄位
+  const controls = Array.from(form.querySelectorAll('input, select, textarea'));
   let firstInvalid = null;
-  const controls = Array.from(formElement.querySelectorAll('input, select, textarea'));
   controls.forEach((control) => {
     control.classList.remove('is-invalid');
     if (!control.checkValidity()) {
       control.classList.add('is-invalid');
-      if (!firstInvalid) {
-        firstInvalid = control;
-      }
+      if (!firstInvalid) firstInvalid = control;
     }
   });
-  return firstInvalid;
-}
 
-agreeCheckbox.addEventListener('change', () => {
-  if (agreeCheckbox.checked) {
-    alert(`隱私權條款：
-  1. 我們僅蒐集提供服務所需的最少個人資料。
-  2. 您的資料將依據個資法安全保存與使用。
-  3. 您可隨時要求查閱、更正或刪除個人資料。
-  感謝您閱讀並同意本條款。`);
-  }
-});
+  // 額外驗證
+  const emailOk = showValidity(email);
+  const phoneOk = showValidity(phone);
+  const passwordOk = validatePassword();
+  const confirmOk = validateConfirm();
 
-form.addEventListener('submit', async (event) => {
-  event.preventDefault();
-  submitBtn.disabled = true;
-  submitBtn.textContent = '送出中...';
-
-  const firstInvalid = validateAllInputs(form);
-  if (firstInvalid) {
+  if (firstInvalid || !emailOk || !phoneOk || !passwordOk || !confirmOk) {
     submitBtn.disabled = false;
     submitBtn.textContent = '送出';
-    firstInvalid.focus();
+    (firstInvalid || email).focus();
     return;
   }
 
-  await new Promise((resolve) => setTimeout(resolve, 1000));
-  alert('資料已送出，感謝您的聯絡！');
+  // 模擬送出
+  await new Promise((r) => setTimeout(r, 1000));
+  alert('註冊成功，資料已送出！');
   form.reset();
+  passwordError.textContent = '';
+  confirmError.textContent = '';
+  touched.clear();
   submitBtn.disabled = false;
   submitBtn.textContent = '送出';
 });
 
+// --- 清除按鈕 ---
 resetBtn.addEventListener('click', () => {
   form.reset();
-  Array.from(form.elements).forEach((element) => {
-    element.classList.remove('is-invalid');
-  });
-});
-
-form.addEventListener('input', (event) => {
-  const target = event.target;
-  if (target.classList.contains('is-invalid') && target.checkValidity()) {
-    target.classList.remove('is-invalid');
-  }
+  passwordError.textContent = '';
+  confirmError.textContent = '';
+  touched.clear();
+  Array.from(form.elements).forEach((el) => el.classList.remove('is-invalid'));
 });
