@@ -12,4 +12,3 @@ db.participants.insertOne({
   phone: '0912345678',
   createdAt: new Date()
 });
-
