@@ -12,3 +12,8 @@ db.participants.insertOne({
   phone: '0912345678',
   createdAt: new Date()
 });
+
+db.participants.createIndex(
+  { email: 1 },
+  { unique: true }
+);

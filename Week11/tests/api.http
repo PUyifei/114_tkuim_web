@@ -18,3 +18,21 @@ Content-Type: application/json
 {
   "phone": "0911000111"
 }
+
+### 重複 Email 測試
+POST http://localhost:3001/api/signup
+Content-Type: application/json
+
+{
+  "name": "重複同學",
+  "email": "new@example.com",
+  "phone": "0912345678"
+}
+
+### 取得清單（分頁）
+GET http://localhost:3001/api/signup?page=1&limit=10
+
+### 刪除
+DELETE http://localhost:3001/api/signup/{{last_id}}
+
+
