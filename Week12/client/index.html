@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>登入 / 報名系統</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f5f5;
+      padding: 40px;
+    }
+    h1, h2 {
+      margin-top: 0;
+    }
+    .card {
+      background: #fff;
+      padding: 20px;
+      margin-bottom: 24px;
+      border-radius: 6px;
+      max-width: 480px;
+    }
+    label {
+      display: block;
+      margin-top: 12px;
+    }
+    input {
+      width: 100%;
+      padding: 8px;
+      margin-top: 4px;
+    }
+    button {
+      margin-top: 16px;
+      padding: 8px 16px;
+      cursor: pointer;
+    }
+    button[disabled] {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+    .error {
+      color: #c00;
+      margin-top: 8px;
+    }
+    .success {
+      color: #0a0;
+      margin-top: 8px;
+    }
+    #signup-section {
+      display: none;
+    }
+    ul {
+      padding-left: 20px;
+    }
+    li {
+      margin-bottom: 8px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 登入區塊 -->
+  <div class="card" id="login-section">
+    <h1>使用者登入</h1>
+    <form id="login-form">
+      <label>
+        Email
+        <input type="email" name="email" required />
+      </label>
+      <label>
+        Password
+        <input type="password" name="password" required />
+      </label>
+      <button type="submit">登入</button>
+      <div id="login-error" class="error"></div>
+    </form>
+  </div>
+
+  <!-- 報名與資料區塊 -->
+  <div class="card" id="signup-section">
+    <h2>報名表單</h2>
+
+    <div id="current-user"></div>
+
+    <form id="signup-form">
+      <label>
+        姓名
+        <input type="text" name="name" required />
+      </label>
+      <label>
+        電話
+        <input type="text" name="phone" required />
+      </label>
+      <button type="submit" id="submit-btn">送出</button>
+      <div id="form-message" class="error"></div>
+    </form>
+
+    <hr />
+
+    <h2>報名資料列表</h2>
+    <div id="empty-state">目前沒有任何資料</div>
+    <ul id="signup-list"></ul>
+
+    <button id="logout-btn">登出</button>
+  </div>
+
+  <!-- JS 檔案 -->
+  <script src="login.js"></script>
+  <script src="signup_form.js"></script>
+
+  <script>
+    // 根據登入狀態切換畫面
+    const token = localStorage.getItem('token');
+    const user = localStorage.getItem('user');
+
+    const loginSection = document.getElementById('login-section');
+    const signupSection = document.getElementById('signup-section');
+    const currentUserEl = document.getElementById('current-user');
+
+    if (token && user) {
+      loginSection.style.display = 'none';
+      signupSection.style.display = 'block';
+      const u = JSON.parse(user);
+      currentUserEl.textContent = `目前登入：${u.email}（${u.role}）`;
+    } else {
+      loginSection.style.display = 'block';
+      signupSection.style.display = 'none';
+    }
+  </script>
+</body>
+</html>
