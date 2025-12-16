@@ -7,4 +7,4 @@
 | ALLOWED_ORIGIN | CORS 允許的前端來源網址                |
 
 ## mongo participants
-![alt text](image-1.png)
+![alt text](image.png)

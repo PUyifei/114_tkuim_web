@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <title>Signup List</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <div class="page">
+    <h2>報名清單</h2>
+
+    <div class="card float-small">
+      <table>
+        <thead>
+          <tr>
+            <th>姓名</th>
+            <th>Email</th>
+            <th>手機</th>
+          </tr>
+        </thead>
+        <tbody id="tableBody">
+          <!-- JS 填入 -->
+        </tbody>
+      </table>
+    </div>
+
+    <a href="index.html" class="link">← 回報名頁</a>
+  </div>
+
+  <script>
+    async function loadParticipants() {
+      const res = await fetch('http://localhost:3001/api/signup');
+      const data = await res.json();
+
+      const tbody = document.getElementById('tableBody');
+      tbody.innerHTML = '';
+
+      data.items.forEach(p => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${p.name}</td>
+          <td>${p.email}</td>
+          <td>${p.phone}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    loadParticipants();
+  </script>
+
+</body>
+</html>

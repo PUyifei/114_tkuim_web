@@ -1,5 +1,4 @@
 // signup_form.js
-// === 會員註冊表單綜合驗證 ===
 
 // 取得主要 DOM 元素
 const form = document.getElementById('member-form');
@@ -7,6 +6,7 @@ const submitBtn = document.getElementById('submitBtn');
 const resetBtn = document.getElementById('resetBtn');
 const agreeCheckbox = document.getElementById('agree');
 
+const fullName = document.getElementById('fullName');
 const email = document.getElementById('email');
 const phone = document.getElementById('phone');
 const password = document.getElementById('password');
@@ -14,7 +14,9 @@ const confirmPassword = document.getElementById('confirm');
 const passwordError = document.getElementById('password-error');
 const confirmError = document.getElementById('confirm-error');
 
-// --- 共用：欄位即時清除錯誤樣式 ---
+const touched = new Set();
+
+// --- 即時清除錯誤樣式 ---
 form.addEventListener('input', (e) => {
   const target = e.target;
   if (target.classList.contains('is-invalid') && target.checkValidity()) {
@@ -36,17 +38,10 @@ function showValidity(input) {
   return input.reportValidity();
 }
 
-// 失焦時即時驗證 Email / Phone
-email.addEventListener('blur', () => {
-  showValidity(email);
-});
-phone.addEventListener('blur', () => {
-  showValidity(phone);
-});
+email.addEventListener('blur', () => showValidity(email));
+phone.addEventListener('blur', () => showValidity(phone));
 
 // --- 密碼與確認密碼驗證 ---
-const touched = new Set();
-
 function validatePassword() {
   const value = password.value.trim();
   const hasLetter = /[A-Za-z]/.test(value);
@@ -54,13 +49,9 @@ function validatePassword() {
   const hasSymbol = /[!@#$%^&*(),.?":{}|<>]/.test(value);
   let message = '';
 
-  if (!value) {
-    message = '請輸入密碼。';
-  } else if (value.length < 8) {
-    message = '密碼至少需 8 碼。';
-  } else if (!hasLetter || !hasNumber || !hasSymbol) {
-    message = '請同時包含英文字母、數字與特殊符號。';
-  }
+  if (!value) message = '請輸入密碼。';
+  else if (value.length < 8) message = '密碼至少需 8 碼。';
+  else if (!hasLetter || !hasNumber || !hasSymbol) message = '請同時包含英文字母、數字與特殊符號。';
 
   password.setCustomValidity(message);
   passwordError.textContent = message;
@@ -68,16 +59,10 @@ function validatePassword() {
 }
 
 function validateConfirm() {
-  const passwordValue = password.value.trim();
-  const confirmValue = confirmPassword.value.trim();
-  let message = '';
-
-  if (!confirmValue) {
-    message = '請再次輸入密碼。';
-  } else if (passwordValue !== confirmValue) {
-    message = '兩次輸入的密碼不一致。';
-  }
-
+  const message = confirmPassword.value.trim() === ''
+    ? '請再次輸入密碼。'
+    : (confirmPassword.value !== password.value ? '兩次輸入的密碼不一致。' : '');
+    
   confirmPassword.setCustomValidity(message);
   confirmError.textContent = message;
   return !message;
@@ -106,62 +91,11 @@ function runValidation(fieldId) {
 agreeCheckbox.addEventListener('change', () => {
   if (agreeCheckbox.checked) {
     alert(`隱私權條款：
-1. 我們僅蒐集提供服務所需的最少個人資料。
+1. 僅蒐集提供服務所需最少個人資料。
 2. 您的資料將依據個資法安全保存與使用。
-3. 您可隨時要求查閱、更正或刪除個人資料。
-感謝您閱讀並同意本條款。`);
+3. 可隨時要求查閱、更正或刪除個人資料。
+感謝您同意。`);
   }
-});
-
-// --- 表單送出 ---
-form.addEventListener('submit', async (event) => {
-  event.preventDefault();
-
-  submitBtn.disabled = true;
-  submitBtn.textContent = '送出中...';
-
-  // 驗證一般欄位
-  const controls = Array.from(form.querySelectorAll('input, select, textarea'));
-  let firstInvalid = null;
-  controls.forEach((control) => {
-    control.classList.remove('is-invalid');
-    if (!control.checkValidity()) {
-      control.classList.add('is-invalid');
-      if (!firstInvalid) firstInvalid = control;
-    }
-  });
-
-  // 額外驗證
-  const emailOk = showValidity(email);
-  const phoneOk = showValidity(phone);
-  const passwordOk = validatePassword();
-  const confirmOk = validateConfirm();
-
-  if (firstInvalid || !emailOk || !phoneOk || !passwordOk || !confirmOk) {
-    submitBtn.disabled = false;
-    submitBtn.textContent = '送出';
-    (firstInvalid || email).focus();
-    return;
-  }
-
-  // 模擬送出
-  await new Promise((r) => setTimeout(r, 1000));
-  alert('註冊成功，資料已送出！');
-  form.reset();
-  passwordError.textContent = '';
-  confirmError.textContent = '';
-  touched.clear();
-  submitBtn.disabled = false;
-  submitBtn.textContent = '送出';
-});
-
-// --- 清除按鈕 ---
-resetBtn.addEventListener('click', () => {
-  form.reset();
-  passwordError.textContent = '';
-  confirmError.textContent = '';
-  touched.clear();
-  Array.from(form.elements).forEach((el) => el.classList.remove('is-invalid'));
 });
 
 // --- 抓報名清單並渲染 table ---
@@ -171,7 +105,7 @@ async function loadParticipants() {
     const data = await res.json();
 
     const tbody = document.getElementById('participantsTableBody');
-    tbody.innerHTML = ''; // 先清空
+    tbody.innerHTML = '';
 
     data.items.forEach(item => {
       const tr = document.createElement('tr');
@@ -188,6 +122,21 @@ async function loadParticipants() {
   }
 }
 
+// --- 表單送出 ---
+form.addEventListener('submit', async (event) => {
+  event.preventDefault();
+  submitBtn.disabled = true;
+  submitBtn.textContent = '送出中...';
+
+  // 基本欄位驗證
+  const controls = Array.from(form.querySelectorAll('input, select, textarea'));
+  let firstInvalid = null;
+  controls.forEach(control => {
+    control.classList.remove('is-invalid');
+    if (!control.checkValidity() && !firstInvalid) firstInvalid = control;
+    if (!control.checkValidity()) control.classList.add('is-invalid');
+  });
+
   const emailOk = showValidity(email);
   const phoneOk = showValidity(phone);
   const passwordOk = validatePassword();
@@ -201,12 +150,10 @@ async function loadParticipants() {
   }
 
   try {
-    // 送資料到 API
     const payload = {
-      name: form.fullName.value,
-      email: form.email.value,
-      phone: form.phone.value,
-      // 你 API 目前沒有 password 欄位，如果不需要可忽略
+      name: fullName.value,
+      email: email.value,
+      phone: phone.value
     };
 
     const response = await fetch('http://localhost:3001/api/signup', {
@@ -222,13 +169,12 @@ async function loadParticipants() {
     }
 
     alert('註冊成功，資料已送出！');
-
     form.reset();
     passwordError.textContent = '';
     confirmError.textContent = '';
     touched.clear();
 
-    // 成功後重新載入 table
+    // 更新 table
     loadParticipants();
 
   } catch (err) {
@@ -240,5 +186,14 @@ async function loadParticipants() {
   }
 });
 
-// 網頁一打開就載入報名清單
+// --- 清除按鈕 ---
+resetBtn.addEventListener('click', () => {
+  form.reset();
+  passwordError.textContent = '';
+  confirmError.textContent = '';
+  touched.clear();
+  Array.from(form.elements).forEach(el => el.classList.remove('is-invalid'));
+});
+
+// --- 網頁一打開就載入 table ---
 loadParticipants();
