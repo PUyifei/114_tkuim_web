@@ -1,8 +1,8 @@
-// server/middlewares/auth.js
+// middlewares/auth.js
 import express from 'express';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
-import User from '../models/User.js'; // 你的 User model
+import User from '../models/User.js'; // 你的 Mongoose User model
 
 const router = express.Router();
 const JWT_SECRET = process.env.JWT_SECRET || 'supersecret';
@@ -18,24 +18,20 @@ router.post('/login', async (req, res) => {
   try {
 
     const user = await User.findOne({ email });
-    if (!user) {
-      return res.status(401).json({ message: '帳號或密碼錯誤' });
-    }
+    if (!user) return res.status(401).json({ message: '帳號或密碼錯誤' });
 
- 
+
     const isMatch = await bcrypt.compare(password, user.passwordHash);
-    if (!isMatch) {
-      return res.status(401).json({ message: '帳號或密碼錯誤' });
-    }
+    if (!isMatch) return res.status(401).json({ message: '帳號或密碼錯誤' });
 
-   
+
     const token = jwt.sign(
       { sub: user._id.toString(), email: user.email, role: user.role },
       JWT_SECRET,
       { expiresIn: '1h' }
     );
 
-  
+
     res.json({
       token,
       user: {
@@ -59,7 +55,6 @@ export function authMiddleware(req, res, next) {
   if (!authHeader?.startsWith('Bearer ')) {
     return res.status(401).json({ error: '缺少授權資訊' });
   }
-
   const token = authHeader.replace('Bearer ', '');
   try {
     const payload = jwt.verify(token, JWT_SECRET);
