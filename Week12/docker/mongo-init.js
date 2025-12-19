@@ -18,7 +18,7 @@ db.users.createIndex({ email: 1 }, { unique: true });
 // 預先建立管理員帳號（pwd 需先用 bcrypt 雜湊）
 db.users.insertOne({
   email: 'admin@example.com',
-  passwordHash: '$2b$10$4P6uyrAvH/e0K9..exampleHash12345',
+  passwordHash: '$2b$10$Ln4ajQTL3ShMlx/nn/J4Ju6UHbp08QecISciVFg3ZTyl36.CLWxCC',
   role: 'admin',
   createdAt: new Date()
 });
@@ -26,7 +26,7 @@ db.users.insertOne({
 //預設學生帳號
 db.users.insertOne({
   email: 'student@example.com',
-  passwordHash: '$2b$10$ABCDEF....',
+  passwordHash: '$2b$10$5nTyK1c2mehS82PFmoSYuO.2KJFMhG7C73R/SUjRN5jtyVkiBSTuO',
   role: 'student',
   createdAt: new Date()
 });

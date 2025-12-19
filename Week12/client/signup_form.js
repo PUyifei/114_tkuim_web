@@ -1,5 +1,6 @@
+// client/signup_form.js
 const form = document.getElementById('signup-form');
-const submitBtn = document.getElementById('submit-btn');
+const submitBtn = form.querySelector('button[type="submit"]');
 const messageBox = document.getElementById('form-message');
 
 form.addEventListener('submit', async (e) => {
@@ -17,11 +18,13 @@ form.addEventListener('submit', async (e) => {
 
   const payload = {
     name: form.name.value.trim(),
-    phone: form.phone.value.trim()
+    email: form.email.value.trim()
   };
 
-  const headers = { 'Content-Type': 'application/json' };
-  headers.Authorization = `Bearer ${token}`;
+  const headers = {
+    'Content-Type': 'application/json',
+    Authorization: `Bearer ${token}`
+  };
 
   try {
     const res = await fetch('/api/signup', {
@@ -46,7 +49,7 @@ form.addEventListener('submit', async (e) => {
 
     messageBox.textContent = '報名成功';
     form.reset();
-    loadSignupList(); // 重新載入列表
+    loadSignupList?.();
   } catch (err) {
     messageBox.textContent = '系統錯誤，請稍後再試';
   } finally {

@@ -1,3 +1,4 @@
+// client/login.js
 const loginForm = document.getElementById('login-form');
 const errorBox = document.getElementById('login-error');
 
@@ -22,12 +23,11 @@ loginForm.addEventListener('submit', async (e) => {
       return;
     }
 
-    // ✅ 成功
     localStorage.setItem('token', data.token);
     localStorage.setItem('user', JSON.stringify(data.user));
 
     alert('登入成功，快去看報名資料');
-    location.href = '/signup.html';
+    location.reload(); 
   } catch (err) {
     errorBox.textContent = '系統錯誤，請稍後再試';
   }
