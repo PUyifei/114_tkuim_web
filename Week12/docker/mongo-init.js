@@ -23,10 +23,9 @@ db.users.insertOne({
   createdAt: new Date()
 });
 
-//預設學生帳號
 db.users.insertOne({
   email: 'student@example.com',
-  passwordHash: '$2b$10$5nTyK1c2mehS82PFmoSYuO.2KJFMhG7C73R/SUjRN5jtyVkiBSTuO',
+  passwordHash: '$2b$10$5nTyK1c2mehS82PFmoSYuO.2KJFMhG7C73R/SUjRN5jtyVkiBSTuO', // 同樣密碼
   role: 'student',
   createdAt: new Date()
 });
