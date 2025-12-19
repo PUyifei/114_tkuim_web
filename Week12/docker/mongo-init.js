@@ -26,7 +26,7 @@ db.users.insertOne({
 //預設學生帳號
 db.users.insertOne({
   email: 'student@example.com',
-  passwordHash: '<bcrypt hash>',
+  passwordHash: '$2b$10$ABCDEF....',
   role: 'student',
   createdAt: new Date()
 });
